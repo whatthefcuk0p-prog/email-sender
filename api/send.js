@@ -1,24 +1,17 @@
-const { Resend } = require('resend');
-const express = require('express');
-const app = express();
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-app.use(express.json());
-
-app.post('/api/send', async (req, res) => {
-    const { email, subject, message } = req.body;
-
-    try {
-        const data = await resend.emails.send({
-            from: process.env.FROM_EMAIL,
-            to: email,
-            subject: subject,
-            html: `<p>${message}</p>`
-        });
-        res.status(200).json({ success: true, data });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+const { data, error } = await resend.emails.send({
+  from: process.env.FROM_EMAIL,
+  to: userEmail,
+  subject: "Your Subject Here",
+  html: `
+    <div style="border: 2px solid #eaeaea; padding: 20px; border-radius: 8px; font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #333;">Hello from PrivateInfo!</h2>
+      <p style="font-size: 16px; color: #555;">This is a professionally styled email.</p>
+      
+      <blockquote style="border-left: 4px solid #0070f3; margin: 20px 0; padding-left: 15px; color: #666; font-style: italic;">
+        "Here is a nicely formatted quotation block."
+      </blockquote>
+      
+      <p style="font-size: 16px; color: #555;">Best regards,<br><strong>The PrivateInfo Team</strong></p>
+    </div>
+  `
 });
-
-module.exports = app;
